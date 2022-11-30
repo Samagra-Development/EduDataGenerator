@@ -1,0 +1,554 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: 'CQUBE'
+
+basePath: "/v0"
+
+tags:
+  - name: "spec"
+  - name: "ingestion"
+
+schemes:
+  - "https"
+  - "http"
+
+paths:
+  /spec/event:
+    post:
+      tags:
+        - "spec"
+      summary: "Create a new event Specification"
+      description: "Add new event Specification"
+      operationId: "eventSpecification"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              event_name:
+                type: "string"
+                example: "student_count"
+              adapterConfigs:
+                description: "The adapterConfigs Schema"
+                type: "object"
+                properties:
+                 {}
+              dimensions:
+                description: "The dimensions Schema"
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    id:
+                      type: "string"
+                      example: "D1"
+                    key:
+                      type: "string"
+                      example: "schoolId"
+              items:
+                description: "The items Schema"
+                type: "object"
+                properties:
+                  metadata:
+                    description: "The metadata Schema"
+                    type: "object"
+                    properties:
+                      schoolId:
+                        type: "string"
+                        example: "number"
+                      gradeId:
+                        type: "string"
+                        example: "number"
+                      count:
+                        type: "string"
+                        example: "number"
+                  rows:
+                    type: "array"
+                    items:
+                      type: "object"
+                      properties:
+                        schoolId:
+                          type: "string"
+                        gradeId:
+                          type: "string"
+                        count:
+                          type: "string"
+                    example:
+                      - schoolId: '101'
+                        gradeId: '1'
+                        count: '20'
+                      - schoolId: '102'
+                        gradeId: '2'
+                        count: '20'
+      responses:
+        200:
+          description: "Event Spec Created Successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Event Spec Created Successfully"
+              pid:
+                type: "integer"
+                example: 1
+              event_name:
+                type: "string"
+                example: "student_count"
+        400:
+          description: "Something went wrong"
+          schema:
+            $ref: "#/definitions/generic_error"
+  /spec/dimension:
+    post:
+      tags:
+        - "spec"
+      summary: "Create a new dimension Specification"
+      description: "Add new dimension Specification"
+      operationId: "dimensionSpecification"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              dimension_name:
+                type: "string"
+                example: "district"
+              dimension:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    schoolId:
+                      type: "string"
+                      example: 1
+                    district:
+                      type: "string"
+                      example: "Shimla"
+                    block:
+                      type: "string"
+                      example: "Tikkar"
+      responses:
+        200:
+          description: "Dimension Spec Created Successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Dimension Spec Created Successfully"
+              pid:
+                type: "integer"
+                example: 4
+              dimension_name:
+                type: "string"
+                example: "district"
+        400:
+          description: "Something went wrong"
+          schema:
+            $ref: "#/definitions/generic_error"
+  /spec/dataset:
+    post:
+      tags:
+        - "spec"
+      summary: "Create a new dataset Specification"
+      description: "Add new dataset Specification"
+      operationId: "datasetSpecification"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              dataset_name:
+                type: "string"
+                example: "student_count"
+              dataset:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    events:
+                      description: "The events schema"
+                      type: "object"
+                      properties:
+                        examType:
+                          type: "string"
+                          example: "Periodic Assessment"
+                    dimensions:
+                      type: "array"
+                      items:
+                        type: "object"
+                        properties:
+                         id:
+                          type: "string"
+                          example: "D1"
+                         key:
+                          type: "string"
+                          example: "schoolId"
+                    aggregates:
+                      type: "array"
+                      items:
+                        type: "object"
+                        properties:
+                          id:
+                            type: "string"
+                            example: "AVERAGE"
+                          key:
+                            type: "string"
+                            example: "studentAttendance"
+
+      responses:
+        200:
+          description: "Dataset Spec Created Successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Dataset Spec Created Successfully"
+              pid:
+                type: "integer"
+                example: 3
+              dataset_name:
+                type: "string"
+                example: "student_count"
+        400:
+          description: "Something went wrong"
+          schema:
+            $ref: "#/definitions/generic_error"
+  /spec/transformer:
+    post:
+      tags:
+        - "spec"
+      summary: "Create a new transformer Specification"
+      description: "Add new transformer Specification"
+      operationId: "transformerSpecification"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              transformer_name:
+                type: "string"
+                example: "COUNT"
+              transformer:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    events:
+                      type: "object"
+                      properties:
+                        examType:
+                          type: "string"
+                          example: "Periodic Assessment"
+                    dimensions:
+                      type: "array"
+                      items:
+                        type: "object"
+                        properties:
+                          id:
+                            type: "string"
+                            example: "D1"
+                          key:
+                            type: "string"
+                            example: "schoolId"
+                    datasetId:
+                      type: "string"
+                      example: "C1"
+                    operation:
+                      type: "string"
+                      example: ""
+      responses:
+        200:
+          description: "Transformer Spec Created Successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Transformer Spec Created Successfully"
+              pid:
+                type: "integer"
+                example: 5
+              transformer_name:
+                type: "string"
+                example: "COUNT"
+        400:
+          description: "Something went wrong"
+          schema:
+            $ref: "#/definitions/generic_error"
+  /spec/pipe:
+    post:
+      tags:
+        - "spec"
+      summary: "Create a new pipeline Specification"
+      description: "Add new pipeline Specification"
+      operationId: "pipelineSpecification"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              pipeline_name:
+                type: "string"
+                example: "student_count"
+              pipeline:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    event_name:
+                      type: "string"
+                    cube_name:
+                      type: "string"
+                    dimension_name:
+                      type: "string"
+                    transformer_name:
+                      type: "string"
+                example:
+                  - eventName: Periodic Assessment Event
+                    cubeName: Periodic Assessment Cube
+                    dimensionName: District
+                    TransformerName: Avergae Marks
+
+      responses:
+        200:
+          description: "Pipe Spec Created Successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Pipe Spec Created Successfully"
+              pid:
+                type: "integer"
+                example: 2
+
+        400:
+          description: "Something went wrong"
+          schema:
+            $ref: "#/definitions/generic_error"
+
+  /ingestion/event:
+    post:
+      tags:
+        - "ingestion"
+      summary: "Add Event into a CSV"
+      description: "Add event"
+      operationId: "addEvent"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              event_name:
+                type: "string"
+                example: "student_count"
+              school_id:
+                type: "string"
+                example: "101"
+              grade_id:
+                type: "string"
+                example: "1"
+              count:
+                type: "string"
+                example: "10"
+      responses:
+        200:
+          description: "Event Added Successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Event Added Successfully"
+        400:
+          description: "Something went wrong"
+          schema:
+            $ref: "#/definitions/generic_error"
+  /ingestion/dimension:
+    post:
+      tags:
+        - "ingestion"
+      summary: "Add dimension into CSV"
+      description: "Add dimension"
+      operationId: "addDimension"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              dimension_name:
+                type: "string"
+                example: "district"
+              schoolId:
+                type: "string"
+                example: 1
+              district:
+                type: "string"
+                example: "Shimla"
+              block:
+                type: "string"
+                example: "Tikkar"
+      responses:
+        200:
+          description: "Dimension Added Successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Dimension Added Successfully"
+        400:
+          description: "Something went wrong"
+          schema:
+            $ref: "#/definitions/generic_error"
+  /ingestion/dataset:
+    post:
+      tags:
+        - "ingestion"
+      summary: "Add dataset"
+      description: "Add dataset"
+      operationId: "addDataset"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              dataset_name:
+                type: "string"
+                example: "student_count"
+              event_name:
+                type: "string"
+                example: "student_count"
+              dimension_name:
+                type: "string"
+                example: "District"
+      responses:
+        200:
+          description: "Dataset Added Successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Dataset Added Successfully"
+        400:
+          description: "Something went wrong"
+          schema:
+            $ref: "#/definitions/generic_error"
+  /ingestion/pipeline:
+    post:
+      tags:
+        - "ingestion"
+      summary: "Trigger the pipeline"
+      description: "Trigger the pipeline"
+      operationId: "triggerPipeline"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              pipeline_name:
+                type: "string"
+                example: "student_count"
+              schedule_type:
+                type: "string"
+                example: "ingest to aggregate/aggregate to dataset"
+      responses:
+        200:
+          description: "Pipeline Triggered Successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Pipeline Triggered Successfully"
+        400:
+          description: "Something went wrong"
+          schema:
+            $ref: "#/definitions/generic_error"
+  /ingestion/schedule:
+    post:
+      tags:
+        - "ingestion"
+      summary: "create a Schedule"
+      description: "Create a schedule"
+      operationId: "createSchedule"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              schedule_type:
+                type: "string"
+                example: "ingest to aggregate/aggregate to dataset"
+              scheduled_at:
+                type: "string"
+                example: "29/11/2022 14:00:00"
+              pipeline_name:
+                type: "string"
+                example: "student_count"
+      responses:
+        200:
+          description: "Schedule created Successfully"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Schedule created Successfully"
+        400:
+          description: "Something went wrong"
+          schema:
+            $ref: "#/definitions/generic_error"
+
+definitions:
+  generic_error:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          example: "Invalid Input"
